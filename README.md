@@ -51,7 +51,7 @@ cd ~/川山甲考核题 && ./scripts/00_build.sh
 # 终端 1：启动仿真（Gazebo 世界 + 机器人）
 ./scripts/01_start_simulation.sh
 
-# 终端 2：键盘遥控（建图巡游 / 演示用）
+# 终端 2：键盘遥控
 ./scripts/02_teleop.sh
 
 # —— 方法一：Cartographer 建图 ——
@@ -61,10 +61,10 @@ cd ~/川山甲考核题 && ./scripts/00_build.sh
 # 终端 4（Cartographer 保持运行）：
 ./scripts/05_save_map.sh robot_cartographer
 
-# —— 方法二：SLAM Toolbox 建图（先 Ctrl+C 停掉 Cartographer）——
+# —— 方法二：SLAM Toolbox 建图——
 # 终端 3'：
 ./scripts/04_mapping_slam_toolbox.sh
-# 终端 2 再次遥控巡游（尽量相同轨迹）
+# 终端 2 再次遥控巡游
 # 终端 4（SLAM Toolbox 保持运行）：
 ./scripts/05_save_map.sh robot_slam_toolbox
 
@@ -72,7 +72,7 @@ cd ~/川山甲考核题 && ./scripts/00_build.sh
 python3 scripts/analyze_map.py maps/robot_cartographer.pgm maps/robot_slam_toolbox.pgm
 python3 scripts/compare_maps.py maps/robot_cartographer.yaml maps/robot_slam_toolbox.yaml
 
-# —— 导航（先停掉全部 SLAM，终端 5）——
+# —— 导航——
 ./scripts/06_navigation.sh robot_cartographer   # 或 robot_slam_toolbox
 ```
 
@@ -92,4 +92,4 @@ python3 scripts/compare_maps.py maps/robot_cartographer.yaml maps/robot_slam_too
 
 - 系统架构（节点/TF/话题/参数/原理）：[docs/System_Architecture.md](docs/System_Architecture.md)
 - 双 SLAM 对比报告（实测数据 + 结论）：[docs/SLAM_Comparison.md](docs/SLAM_Comparison.md)
-- 开发记录（AI 辅助说明 + 失败案例 + 实测数据 + 素材归档）：[docs/Development_Record.md](docs/Development_Record.md)
+- 开发记录：[docs/Development_Record.md](docs/Development_Record.md)
