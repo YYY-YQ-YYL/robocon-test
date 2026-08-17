@@ -1,0 +1,87 @@
+# SLAM Toolbox 在线异步建图参数（拓展 SLAM 方案）
+#
+# 相对官方默认的两处关键修正（适配机器人（burger 底盘）与标准开源仿真环境）：
+#   1. min_laser_range / max_laser_range = 0.12 / 3.5，对齐激光传感器真实量程
+#      （默认 max 20m 会浪费计算并引入过远射线）
+#   2. minimum_travel_distance = 0.2，低速遥控迷宫内建图更密集（默认 0.5 易漏帧）
+#
+# 重要说明：slam_toolbox 通过 TF(odom -> base_footprint) 获取里程计，
+#           不订阅 nav_msgs/Odometry。pose_topic 仅用于接收
+#           geometry_msgs/PoseStamped（默认 "pose"），千万不要设为 /odom。
+
+slam_toolbox:
+  ros__parameters:
+    # ---------- 求解器（Ceres） ----------
+    solver_plugin: solver_plugins::CeresSolver
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
+    ceres_preconditioner: SCHUR_JACOBI
+    ceres_trust_strategy: LEVENBERG_MARQUARDT
+    ceres_dogleg_type: TRADITIONAL_DOGLEG
+    ceres_loss_function: None
+
+    # ---------- 坐标系与话题 ----------
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_footprint            # 必须与 diff_drive 的 robot_base_frame 一致
+    scan_topic: /scan                     # 注意前导斜杠
+    use_map_saver: true
+    mode: mapping                         # 建图模式（localization 为定位模式）
+    pose_topic: pose                      # 仅接收 PoseStamped，勿改为 /odom
+
+    # ---------- 地图输出 ----------
+    map_update_interval: 2.0              # 地图更新间隔（秒），越小越频繁
+    resolution: 0.05
+    min_laser_range: 0.12                 # 对齐传感器 min
+    max_laser_range: 3.5                  # 对齐传感器 max
+
+    # ---------- 建图触发条件（低速迷宫） ----------
+    minimum_travel_distance: 0.2
+    minimum_travel_heading: 0.2
+    minimum_time_interval: 0.5
+
+    # ---------- TF 与缓冲 ----------
+    transform_publish_period: 0.02        # 50Hz 发布 map -> odom
+    transform_timeout: 0.2
+    tf_buffer_duration: 30.0
+    stack_size_to_use: 40000000
+    enable_interactive_mode: true
+    debug_logging: false
+    throttle_scans: 1
+    scan_buffer_size: 10
+    scan_buffer_maximum_scan_distance: 10.0
+
+    # ---------- 前端扫描匹配 ----------
+    use_scan_matching: true
+    use_scan_barycenter: true
+    link_match_minimum_response_fine: 0.1
+    link_scan_maximum_distance: 1.5
+
+    # ---------- 后端闭环检测 ----------
+    do_loop_closing: true
+    loop_search_maximum_distance: 3.0
+    loop_match_minimum_chain_size: 10
+    loop_match_maximum_variance_coarse: 3.0
+    loop_match_minimum_response_coarse: 0.35
+    loop_match_minimum_response_fine: 0.45
+
+    # ---------- 相关搜索空间 ----------
+    correlation_search_space_dimension: 0.5
+    correlation_search_space_resolution: 0.01
+    correlation_search_space_smear_deviation: 0.1
+    loop_search_space_dimension: 8.0
+    loop_search_space_resolution: 0.05
+    loop_search_space_smear_deviation: 0.03
+
+    # ---------- 匹配惩罚项 ----------
+    distance_variance_penalty: 0.5
+    angle_variance_penalty: 1.0
+    fine_search_angle_offset: 0.00349
+    coarse_search_angle_offset: 0.349
+    coarse_angle_resolution: 0.0349
+    minimum_angle_penalty: 0.9
+    minimum_distance_penalty: 0.5
+    use_response_expansion: true
+
+    # ---------- 栅格过滤 ----------
+    min_pass_through: 2
+    occupancy_threshold: 0.1

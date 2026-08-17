@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>robot_description</name>
+  <version>1.0.0</version>
+  <description>自主机器人 URDF 描述与显示（burger 底盘 + 360 激光）</description>
+  <maintainer email="dev@robot.local">robot</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>robot_state_publisher</depend>
+  <depend>urdf</depend>
+  <depend>rviz2</depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

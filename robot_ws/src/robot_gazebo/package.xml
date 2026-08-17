@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>robot_gazebo</name>
+  <version>1.0.0</version>
+  <description>自主迷宫仿真环境（Gazebo 世界 + 机器人 spawn）</description>
+  <maintainer email="dev@robot.local">robot</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>gazebo_ros</depend>
+  <depend>gazebo_plugins</depend>
+  <depend>gazebo_ros_pkgs</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>robot_description</depend>
+  <depend>urdf</depend>
+  <depend>rviz2</depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+    <gazebo_ros gazebo_model_path="${prefix}/models"/>
+  </export>
+</package>

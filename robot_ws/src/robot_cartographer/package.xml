@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>robot_cartographer</name>
+  <version>1.0.0</version>
+  <description>基础 SLAM 方案：Cartographer 建图</description>
+  <maintainer email="dev@robot.local">robot</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>cartographer_ros</depend>
+  <depend>cartographer_ros_msgs</depend>
+  <depend>rviz2</depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>
