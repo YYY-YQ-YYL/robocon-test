@@ -13,7 +13,7 @@
 保证变量唯一：机器人型号、世界、激光参数、建图轨迹均不变，仅切换 SLAM 节点。
 
 ### 数据来源
-1. **地图质量**：`analyze_map.py` / `compare_maps.py` 自动统计
+1. **地图质量**：`analyze_map.py` 与 `compare_maps.py` 自动统计
    - 占用、空白、未知占比
    - 障碍连通分量数
    - 与理想世界的 **IoU 、 Precision 、 Recall of occupied**
