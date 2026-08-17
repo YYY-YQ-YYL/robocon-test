@@ -85,7 +85,7 @@ python3 scripts/compare_maps.py maps/robot_cartographer.yaml maps/robot_slam_too
 | 调参成本 | 高 | 低 |
 | 典型适用 | 复杂/大场景、传感器噪声大 | 中小场景、快速部署 |
 
-定量指标（地图质量 IoU/Precision/Recall、资源占用 CPU/内存）由 `analyze_map.py`、
+定量指标（地图质量 IoU、Precision、Recall由 `analyze_map.py`、
 `compare_maps.py`、`07_measure_resources.sh` 产出，模板与结论框架见 `docs/SLAM_Comparison.md`。
 
 ## 6. 相关文档
