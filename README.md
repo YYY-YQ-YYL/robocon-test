@@ -1,13 +1,6 @@
-# 川山甲考核 · 方向二：自主导航（ROS 2 + Gazebo 仿真工程）
-
-基于 **ROS 2 Humble + Gazebo Classic** 的自主移动机器人仿真工程，覆盖考核的 2.1 普通题与 2.2 拓展题：
-
-- **2.1 普通题**：标准开源移动机器人（`robot`，burger 底盘）+ 标准仿真世界（`robot_world`）+ **Navigation2** 自主导航部署。
-- **2.2 拓展题**：部署第二种开源 SLAM —— **SLAM Toolbox**（方法二），与基础方案 **Cartographer**（方法一）在同一环境下对比，含地图质量与资源占用对比工具。
-- **命名规范**：机器人、世界、包、话题、TF 全部统一为 `robot` 命名；功能与参数均与开源标准教程一致。
-- **交付形式**：完整可上传源码 + 一键脚本 + 中文文档（`docs/`）；演示视频由使用者按操作手册自行录制。
-
----
+# 川山甲考核 自主导航
+- **2.1 普通题**：移动机器人+ 仿真世界+** Navigation2** 自主导航部署
+- **2.2 拓展题**：部署第二种开源 SLAM —— **SLAM Toolbox**（方法二），与基础方案 **Cartographer**（方法一）在同一环境下对比
 
 ## 1. 工程结构
 
@@ -42,28 +35,14 @@
     └── robot_teleop/           键盘遥控
 ```
 
-## 2. 环境依赖（本机已装齐）
+## 2. 环境依赖
 
 - Ubuntu 22.04 + **ROS 2 Humble**（`ros-humble-desktop`）
 - Gazebo Classic 11（`gazebo_ros`、`gazebo_plugins`）
 - `cartographer_ros`、`slam_toolbox`、`nav2_*` 全套、`robot_state_publisher`、`map_server`
 - colcon / rviz2
 
-> 本机注意：终端里 conda 的 python3 排在前且缺少 rclpy/lxml，所有脚本/launch 均以
-> `PATH=/usr/bin:/bin:$PATH` 前置系统 python；不要用 conda 的 python 解释 launch 脚本。
-
-## 3. 包清单与命名对照表
-
-| 项 | 值 | 说明 |
-|---|---|---|
-| 工作空间 | `robot_ws` | colcon 工作空间 |
-| 机器人 | `robot`（burger 底盘） | URDF `robot_burger.urdf` |
-| 世界 | `robot_world.world` | 标准开源仿真世界 |
-| 包 1~6 | `robot_description` / `robot_gazebo` / `robot_cartographer` / `robot_slam_toolbox` / `robot_navigation` / `robot_teleop` | 全部 `ament_cmake` 纯数据包 |
-| TF 树 | `map → odom → base_footprint → base_link → {wheel_L/R, caster_back, imu_link, base_scan}` | 全链路统一 |
-| 关键话题 | `/scan`（5Hz）、`/odom`（30Hz）、`/cmd_vel`、`/map`、`/clock` | 统一命名 |
-
-## 4. 一键流程（详情见 docs/Operation_Manual.md）
+## 3. 一键流程（详情见 docs/Operation_Manual.md）
 
 ```bash
 # 终端 0：构建
@@ -112,6 +91,5 @@ python3 scripts/compare_maps.py maps/robot_cartographer.yaml maps/robot_slam_too
 ## 6. 相关文档
 
 - 系统架构（节点/TF/话题/参数/原理）：[docs/System_Architecture.md](docs/System_Architecture.md)
-- 操作手册（逐终端命令 + 自测 + 故障排查 + 录视频流程）：[docs/Operation_Manual.md](docs/Operation_Manual.md)
 - 双 SLAM 对比报告（实测数据 + 结论）：[docs/SLAM_Comparison.md](docs/SLAM_Comparison.md)
 - 开发记录（AI 辅助说明 + 失败案例 + 实测数据 + 素材归档）：[docs/Development_Record.md](docs/Development_Record.md)
