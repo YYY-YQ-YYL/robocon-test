@@ -42,7 +42,7 @@
 - `cartographer_ros`、`slam_toolbox`、`nav2_*` 全套、`robot_state_publisher`、`map_server`
 - colcon / rviz2
 
-## 3. 一键流程（详情见 docs/Operation_Manual.md）
+## 3. 操作流程
 
 ```bash
 # 终端 0：构建
