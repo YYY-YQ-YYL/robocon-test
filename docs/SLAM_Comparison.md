@@ -1,10 +1,10 @@
-# 双 SLAM 算法对比报告（拓展题 2.2）
+#  SLAM 算法对比报告
 
 > 本工程在**完全相同的**环境（同一标准世界、同一机器人、同一激光传感器、同一遥控轨迹）下分别部署两种开源 SLAM 算法：
 > - **方法一（基础）**：Cartographer（Google 开源，图优化 + CSM 前端）
 > - **方法二（拓展）**：SLAM Toolbox（KartoGraph 衍生，在线异步）
 >
-> 本文档给出**对比方法、数据来源、命令**与**实测结论**（数据已按 2026-08-17 实跑填入）。
+> 本文档给出**对比方法、数据来源、命令**与**实测结论**。
 
 ---
 
@@ -26,13 +26,12 @@
    - 障碍连通分量数（理想世界为若干柱状障碍，连通块数反映碎片程度）
    - 与理想世界（按 `robot_world` 设计坐标程序化生成：9 圆柱 + 中心长墙）的 **IoU / Precision / Recall of occupied**
    - 两图间一致性 IoU
-2. **运行资源**：`07_measure_resources.sh`（或手册第 8 节）采集 CPU%、内存 RSS
+2. **运行资源**：`07_measure_resources.sh`采集 CPU%、内存 RSS
 3. **主观质量**：rviz2 截图对比——圆柱轮廓、墙厚、直线度、回环处重影
-4. **导航成功率**（可选）：用各自地图跑 Navigation2，同一组目标点，记录到达成功率与耗时
 
 ---
 
-## 2. 对比数据表（实测，2026-08-17）
+## 2. 对比数据表
 
 ### 2.1 地图质量
 
@@ -48,19 +47,7 @@
 | Recall vs 理想世界 | 1.0 | 0.124 | 0.125 |
 | 两 SLAM 图间 IoU | 1.0 | 0.305 | |
 
-> 生成命令（手册第 9 节）：
-> ```bash
-> python3 scripts/analyze_map.py maps/robot_cartographer.pgm maps/robot_slam_toolbox.pgm
-> python3 scripts/compare_maps.py maps/robot_cartographer.yaml maps/robot_slam_toolbox.yaml
-> ```
->
-> **方法说明**：两张地图由两次独立 SLAM 会话保存，map 帧锚定不同（各自 map→odom 漂移），
-> 不能按像素直接对齐。`compare_maps.py` 采用**刚性配准**（FFT 交叉相关求平移 + 旋转角搜索，
-> 再细调）：每张地图配准到同一"理想世界"（9 圆柱精确坐标 + 中心墙 5.6×5.2m 薄环近似），
-> 报告配准后的 IoU/Precision/Recall；两图间再互相配准报告一致性。
-> 已验证：Cartographer 恢复的 map→世界平移 = (−2.00, −0.50)m，与出生点 (−2, −0.5) 完全吻合。
-> 另以 9 根圆柱的**精确设计坐标**为 GT，直接测圆柱质心定位误差，最直接反映障碍定位精度。
-> Recall 偏低（≈0.12）因理想环墙比地图实际扫到的稀疏轮廓更厚，两图同一标准、相对可比。
+
 
 ### 2.2 运行资源
 
@@ -71,7 +58,7 @@
 | 内存 RSS 均值 (MB) | | |
 | 峰值 RSS (MB) | | |
 
-> 采集命令（建图期间）：
+> 采集：
 > ```bash
 > ./scripts/07_measure_resources.sh cartographer_node 120
 > ./scripts/07_measure_resources.sh async_slam_toolbox_node 120
@@ -89,22 +76,20 @@
 
 ---
 
-## 3. 结论（依据实测数据）
+## 3. 结论
 
 ### 3.1 定位精度
 两方法都准确定位了全部 9 根圆柱且轮廓无重影。以圆柱精确坐标衡量，**Cartographer 障碍定位
 更准（平均 2.3cm vs 4.0cm，RMSE 2.7cm vs 4.3cm）**，与其更强的图优化/回环前端一致；
-两图配准到同一理想世界后 IoU/Precision 几乎持平（0.116/0.642 vs 0.115/0.611），
+两图配准到同一理想世界后 IoU、Precision 几乎持平，
 说明在 5m 级简单场景下二者对障碍的还原能力相当。
 
-### 3.2 资源占用
-（待 07_measure_resources.sh 数据填入；通常 SLAM Toolbox 更轻量。）
 
-### 3.3 易用性与调参成本
+### 3.2 易用性与调参成本
 - Cartographer：需维护 `robot_lds_2d.lua` + 两个被 include 的官方 lua，参数面广、调参门槛高。
 - SLAM Toolbox：单个 YAML 即配置全部，官方默认参数在小场景大多可直用，仅需对齐激光量程。
 
-### 3.4 适用场景结论
+### 3.3 适用场景结论
 > 在本标准世界中：**SLAM Toolbox 以更低的调参成本达到与 Cartographer 相当的建图质量，
 > 且覆盖更完整（未知区 25% vs 40%）**，更适合中小场景与快速部署；**Cartographer 障碍定位
 > 精度更高（2.3cm vs 4.0cm）**，在需要更高定位精度、更复杂/更大场景或传感器噪声明显时
@@ -114,8 +99,6 @@
 ---
 
 ## 4. 附录：指标定义
-
-对占用栅格二值掩码 A（理想/参考）与 B（SLAM 地图）：
 
 - **IoU（交并比）** = `|A∩B| / |A∪B|`
 - **Precision（精确率）** = `|A∩B| / |B|`（B 中被判占用的像素有多少真是障碍 → 误报越低越高）
