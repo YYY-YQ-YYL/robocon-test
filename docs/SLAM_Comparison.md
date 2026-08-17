@@ -4,7 +4,7 @@
 > - **方法一（基础）**：Cartographer（Google 开源，图优化 + CSM 前端）
 > - **方法二（拓展）**：SLAM Toolbox（KartoGraph 衍生，在线异步）
 >
-> 本文档给出**对比方法、数据来源、命令**与**实测结论**。
+> 本文档给出**对比方法、数据来源**与**实测结论**。
 
 ---
 
@@ -12,22 +12,13 @@
 
 保证变量唯一：机器人型号、世界、激光参数、建图轨迹均不变，仅切换 SLAM 节点。
 
-| 控制变量 | 值 |
-|---|---|
-| 机器人 | 标准开源移动机器人（`robot`，burger 底盘，统一命名） |
-| 世界 | `robot_world.world`（标准开源仿真世界：9 根圆柱 + 中心长墙 + 地面地标） |
-| 激光 | 360°、0.12–3.5m、5Hz（Gazebo `ray_sensor`，LDS-01） |
-| 建图轨迹 | 同一遥控路径（绕场外围形成回环，再穿行中央） |
-| 建图参数 | 两套均对齐激光量程 0.12/3.5m |
-
 ### 数据来源
 1. **地图质量**：`analyze_map.py` / `compare_maps.py` 自动统计
    - 占用/空白/未知占比
    - 障碍连通分量数（理想世界为若干柱状障碍，连通块数反映碎片程度）
    - 与理想世界（按 `robot_world` 设计坐标程序化生成：9 圆柱 + 中心长墙）的 **IoU / Precision / Recall of occupied**
    - 两图间一致性 IoU
-2. **运行资源**：`07_measure_resources.sh`采集 CPU%、内存 RSS
-3. **主观质量**：rviz2 截图对比——圆柱轮廓、墙厚、直线度、回环处重影
+2. **主观质量**：rviz2 截图对比——圆柱轮廓、墙厚、直线度、回环处重影
 
 ---
 
@@ -47,40 +38,13 @@
 | Recall vs 理想世界 | 1.0 | 0.124 | 0.125 |
 | 两 SLAM 图间 IoU | 1.0 | 0.305 | |
 
-
-
-### 2.2 运行资源
-
-| 指标 | Cartographer（方法一） | SLAM Toolbox（方法二） |
-|---|---|---|
-| CPU 均值 % | | |
-| 峰值 CPU % | | |
-| 内存 RSS 均值 (MB) | | |
-| 峰值 RSS (MB) | | |
-
-> 采集：
-> ```bash
-> ./scripts/07_measure_resources.sh cartographer_node 120
-> ./scripts/07_measure_resources.sh async_slam_toolbox_node 120
-> ```
-
-### 2.3 主客观观察
-
-| 观察项 | Cartographer | SLAM Toolbox |
-|---|---|---|
-| 建图启动到地图可用 | 即起即用 | 即起即用 |
-| 回环闭合是否明显（地图是否"合拢"） | 轮廓清晰无重影 | 轮廓清晰无重影 |
-| 圆柱轮廓圆度 / 墙直线度 | 好（定位 RMSE 2.7cm） | 好（定位 RMSE 4.3cm） |
-| 覆盖完整性（未知区占比） | 40.1%（有未扫区域） | **25.2%（覆盖更全）** |
-| rviz2 截图 | `maps/robot_cartographer.png` | `maps/robot_slam_toolbox.png` |
-
 ---
 
 ## 3. 结论
 
 ### 3.1 定位精度
 两方法都准确定位了全部 9 根圆柱且轮廓无重影。以圆柱精确坐标衡量，**Cartographer 障碍定位
-更准（平均 2.3cm vs 4.0cm，RMSE 2.7cm vs 4.3cm）**，与其更强的图优化/回环前端一致；
+更准（平均 2.3cm vs 4.0cm，RMSE 2.7cm vs 4.3cm）**，与其更强的图优化、回环前端一致；
 两图配准到同一理想世界后 IoU、Precision 几乎持平，
 说明在 5m 级简单场景下二者对障碍的还原能力相当。
 
