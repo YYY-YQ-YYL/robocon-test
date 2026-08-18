@@ -76,7 +76,7 @@ python3 scripts/compare_maps.py maps/robot_cartographer.yaml maps/robot_slam_too
 ./scripts/06_navigation.sh robot_cartographer   # 或 robot_slam_toolbox
 ```
 
-## 5. 双 SLAM 对比要点
+## 5. SLAM 对比要点
 
 | 维度 | 方法一：Cartographer | 方法二：SLAM Toolbox |
 |---|---|---|
