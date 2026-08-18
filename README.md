@@ -90,6 +90,6 @@ python3 scripts/compare_maps.py maps/robot_cartographer.yaml maps/robot_slam_too
 
 ## 6. 相关文档
 
-- 系统架构（节点/TF/话题/参数/原理）：[docs/System_Architecture.md](docs/System_Architecture.md)
-- 双 SLAM 对比报告（实测数据 + 结论）：[docs/SLAM_Comparison.md](docs/SLAM_Comparison.md)
+- 系统架构：[docs/System_Architecture.md](docs/System_Architecture.md)
+- SLAM 对比报告：[docs/SLAM_Comparison.md](docs/SLAM_Comparison.md)
 - 开发记录：[docs/Development_Record.md](docs/Development_Record.md)
